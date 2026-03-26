@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio — Hero</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #F5F3EF;
+      --ink: #111010;
+      --muted: #888480;
+      --accent: #2A2A2A;
+      --line: #D8D5CF;
+      --highlight: #C8F060;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Mono', monospace;
+      overflow-x: hidden;
+    }
+
+    /* NOISE TEXTURE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 28px 52px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      animation: fadeDown 0.7s ease 0.2s forwards;
+    }
+
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--ink); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 52px;
+      gap: 0;
+    }
+
+    /* LEFT COLUMN */
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 64px;
+      padding-top: 80px;
+      border-right: 1px solid var(--line);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.5s forwards;
+    }
+
+    .tag-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--highlight);
+      display: inline-block;
+      box-shadow: 0 0 8px var(--highlight);
+    }
+
+    .hero-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3.2rem, 6vw, 5.4rem);
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.65s forwards;
+    }
+
+    .hero-name em {
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    /* TYPEWRITER */
+    .typewriter-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.85s forwards;
+    }
+
+    .typewriter-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .typewriter-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.88rem;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--ink);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* CTA */
+    .cta-row {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 1.05s forwards;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--ink);
+      color: var(--bg);
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 16px 32px;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--highlight);
+      transform: translateX(-101%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      z-index: 0;
+    }
+
+    .btn-primary:hover::after { transform: translateX(0); }
+
+    .btn-primary span {
+      position: relative;
+      z-index: 1;
+      transition: color 0.3s;
+    }
+
+    .btn-primary:hover span { color: var(--ink); }
+
+    .btn-arrow {
+      position: relative;
+      z-index: 1;
+      font-size: 1rem;
+      transition: transform 0.3s, color 0.3s;
+    }
+
+    .btn-primary:hover .btn-arrow {
+      transform: translateX(4px);
+      color: var(--ink);
+    }
+
+    .btn-secondary {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-secondary:hover { color: var(--ink); border-color: var(--ink); }
+
+    /* RIGHT COLUMN */
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 64px;
+      padding-top: 80px;
+      gap: 60px;
+    }
+
+    .stat-block {
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.9s forwards;
+    }
+
+    .stat-block:nth-child(2) { animation-delay: 1.05s; }
+    .stat-block:nth-child(3) { animation-delay: 1.2s; }
+
+    .stat-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 3.4rem;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--line);
+    }
+
+    /* SCROLL INDICATOR */
+    .scroll-hint {
+      position: fixed;
+      bottom: 36px;
+      left: 52px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 0.6s ease 1.5s forwards;
+    }
+
+    .scroll-line {
+      width: 40px;
+      height: 1px;
+      background: var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: var(--ink);
+      animation: scrollSlide 2s ease-in-out 2s infinite;
+    }
+
+    @keyframes scrollSlide {
+      0% { left: -100%; }
+      50% { left: 0; }
+      100% { left: 100%; }
+    }
+
+    /* YEAR STAMP */
+    .year-stamp {
+      position: fixed;
+      bottom: 36px;
+      right: 52px;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 0.6s ease 1.5s forwards;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 24px 24px; }
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 0 24px;
+      }
+      .hero-left {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        padding-right: 0;
+        padding-top: 120px;
+        padding-bottom: 48px;
+      }
+      .hero-right {
+        padding-left: 0;
+        padding-top: 40px;
+        padding-bottom: 80px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 32px;
+      }
+      .stat-block { flex: 1; min-width: 100px; }
+      .divider { display: none; }
+      .scroll-hint, .year-stamp { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">YourName.</div>
+    <ul class="nav-links">
+      <li><a href="#">Work</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Resume</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <!-- LEFT -->
+    <div class="hero-left">
+      <div class="tag">
+        <span class="tag-dot"></span>
+        Available for hire
+      </div>
+
+      <h1 class="hero-name">
+        Your<br/><em>Name</em><br/>Here.
+      </h1>
+
+      <div class="typewriter-wrap">
+        <span class="typewriter-label">I build —</span>
+        <span class="typewriter-text" id="typewriter"></span><span class="cursor"></span>
+      </div>
+
+      <div class="cta-row">
+        <a href="#contact" class="btn-primary">
+          <span>Hire Me</span>
+          <span class="btn-arrow">→</span>
+        </a>
+        <a href="#work" class="btn-secondary">View Projects</a>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="hero-right">
+      <div class="stat-block">
+        <div class="stat-number">3+</div>
+        <div class="stat-label">Years of Experience</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-block">
+        <div class="stat-number">24</div>
+        <div class="stat-label">Projects Shipped</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-block">
+        <div class="stat-number">12</div>
+        <div class="stat-label">Happy Clients</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+
+  <div class="year-stamp">© 2026</div>
+
+  <script>
+    const phrases = [
+      "React & Next.js apps",
+      "Node.js REST APIs",
+      "pixel-perfect UIs",
+      "Express backends",
+      "Tailwind interfaces",
+      "full-stack solutions",
+      "things that ship. ✦"
+    ];
+
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+    const el = document.getElementById('typewriter');
+
+    function type() {
+      const current = phrases[phraseIndex];
+      if (!deleting) {
+        el.textContent = current.slice(0, ++charIndex);
+        if (charIndex === current.length) {
+          deleting = true;
+          setTimeout(type, 1800);
+          return;
+        }
+        setTimeout(type, 68);
+      } else {
+        el.textContent = current.slice(0, --charIndex);
+        if (charIndex === 0) {
+          deleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+          setTimeout(type, 400);
+          return;
+        }
+        setTimeout(type, 38);
+      }
+    }
+
+    setTimeout(type, 1600);
+  </script>
+</body>
+</html>
